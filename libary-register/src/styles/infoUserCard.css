@@ -1,0 +1,125 @@
+.user-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  width: 100%;
+  max-width: 760px;
+  padding: 18px 20px;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+  margin-bottom: 1.5rem;
+}
+
+.user-card-left .user-card-logo {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  letter-spacing: 1px;
+  background: #eef2f6;
+  color: #4b5563;
+}
+
+.user-card-middle {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.user-card-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: #2a2f36;
+}
+
+.user-card-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  line-height: 1.2;
+}
+
+.user-card-label {
+  font-weight: 600;
+  color: #6b7280;
+}
+
+.user-card-value {
+  color: #374151;
+  word-break: break-word;
+}
+
+.user-card-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  min-width: 160px;
+}
+
+.user-card-status {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .4px;
+  text-transform: uppercase;
+}
+
+.user-card-status.pending { 
+    color: #b91c1c; 
+} 
+.user-card-status.approved { 
+    color: #047857; 
+}
+
+.user-card-button {
+  border: 0;
+  border-radius: 999px;
+  padding: 10px 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform .04s ease, filter .2s ease;
+  color: #fff;
+}
+
+.user-card-button.to-approve { 
+    background: #dc2626; 
+} 
+
+.user-card-button.to-approve:hover { 
+    filter: brightness(0.95); 
+}
+
+.user-card-button.approved { 
+    background: #059669; 
+}
+
+.user-card-button.approved:hover { 
+    filter: brightness(1.05); 
+}
+
+.user-card-button.whatsapp {
+  background: #25d366; 
+}
+.user-card-button.whatsapp:hover {
+  filter: brightness(0.9);
+}
+
+.user-card-button.email {
+  background: #1a73e8; 
+}
+.user-card-button.email:hover {
+  filter: brightness(0.9);
+}
+
+.user-card-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
