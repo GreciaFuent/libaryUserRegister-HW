@@ -1,20 +1,27 @@
+import UserEmail from "./user-email";
+import UserDPI from "./user-dpi";
+import UserPhoneNumber from "./user-phone-number";
+
+
+
+
 export default class User {
     public id: any;
     public name: string;
     public birthDate: Date;
     public password: string;
-    public dpi: string;
-    public email: string;
-    public phoneNum: string;
+    public dpi: UserDPI;
+    public email: UserEmail;
+    public phoneNum: UserPhoneNumber;
 
     constructor(
         id: number, 
         name: string,
         birthDate: Date,
         password: string,
-        dpi: string,
-        email: string,
-        phoneNum: string,
+        dpi: UserDPI,
+        email: UserEmail,
+        phoneNum: UserPhoneNumber,
         
     ) {
         this.id = id;
@@ -28,8 +35,10 @@ export default class User {
 
     public static create(id: number, name: string, birthDate: Date, password: string, dpi: string, email: string, phoneNum: string): User {
         // se tiene que llamar a la funcion de crear
-
-        // return users;
+        const postUser = new User (
+            id, name, birthDate, password, new UserDPI(dpi), new UserEmail(email), new UserPhoneNumber(phoneNum)
+        )
+        return postUser;
     }
 
 }

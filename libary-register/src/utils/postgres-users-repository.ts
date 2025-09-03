@@ -12,6 +12,20 @@ export default class PostgresUserRepository implements UserRepository{
 
     async save(user: User) {
         // funcion para guardar el User
+        try {
+            const name = user.name;
+            const birthDate = user.birthDate;
+            const password = user.password;
+            const dpi = user.dpi.value;
+            const email = user.email.value;
+            const phoneNum = user.phoneNum.value;
+            const valid_status = false;
+
+            await this.sql`INSERT INTO public.user (name, birthDate, password, dpi, email, phone_number, valid_status) 
+            VALUES (${name},  ${birthDate}, ${password}, ${dpi}, ${email}, ${phoneNum}, ${valid_status});`
+        } catch(error) {
+            console.log("An error occurred while saving user data: ", error)
+        }
     }
 
     async seePost() {
