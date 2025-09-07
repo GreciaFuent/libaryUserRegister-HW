@@ -26,8 +26,3 @@ export async function POST(request:NextRequest){
     }
 
 }
-
-
-export  async function GET() {
-    // aqui se tiene que hacer la conexion con el postgres repository 
-}
