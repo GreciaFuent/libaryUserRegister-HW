@@ -28,12 +28,45 @@ export default class PostgresUserRepository implements UserRepository{
         }
     }
 
-    async seePost() {
-        // funcion para ver usuarios
+    async seeUsers(id: number): Promise<User | null> {
+        // funcion para ver usuario por id
+        try {
+            const result = await this.sql`
+                SELECT id, name, birthDate, password, dpi, email, phone_number, valid_status
+                FROM public.user
+                WHERE id = ${id}
+                LIMIT 1;
+            `;
+
+            if (result.length === 0) return null;
+
+            const r = result[0];
+            return User.create(
+                r.id,
+                r.name,
+                new Date(r.birthDate),
+                r.password,
+                r.dpi,
+                r.email,
+                r.phone_number
+            );
+        } catch (error) {
+            console.log("An error occurred while fetching user data: ", error);
+            return null;
+        }
     }
 
-    async updatePost(user: User) {
-        // funcion para modificar post
+    async update(id: number): Promise<void> {
+    // funcion para actualizar valid_status = true
+        try {
+        await this.sql`
+            UPDATE public.user
+            SET valid_status = TRUE
+            WHERE id = ${id};
+        `;
+        } catch (error) {
+        console.log("An error occurred while updating user data: ", error);
+        }
     }
 
 
