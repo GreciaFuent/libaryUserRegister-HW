@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import PostgresUserRepository from "@/utils/postgres-users-repository";
-import SeeUser from "@/utils/see-users";
+import UserSeeUsers from "@/utils/see-users";
 import UserUpdate from "@/utils/user-update";
 
 
@@ -8,7 +8,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     try {
         const id = Number(params.id);
         const repository = new PostgresUserRepository();
-        const seeUser = new SeeUser(repository);
+        const seeUser = new UserSeeUsers(repository);
         const user = await seeUser.run(id);
 
         if (!user) {
@@ -33,3 +33,4 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
         return NextResponse.json({ message: 'Failed to update data' }, { status: 500 });
     }
 }
+
