@@ -1,4 +1,3 @@
-import User from "./user";
 import UserRepository from "./user-repository";
 
 // este es el caso de uso
