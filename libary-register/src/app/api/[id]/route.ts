@@ -6,12 +6,15 @@ import UserUpdate from "@/utils/user-update";
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } } ) {
     try {
-        const id = Number(params.id);
+        const id = await  Number(params.id);
+        console.log("id", id)
         const repository = new PostgresUserRepository();
         const seeUser = new UserSeeUsers(repository);
         const user = await seeUser.run(id);
+        console.log("usuario", user)
 
-        if (!user) {
+
+        if (user === null) {
             return NextResponse.json({ message: 'User not found' }, { status: 404 });
         }
 

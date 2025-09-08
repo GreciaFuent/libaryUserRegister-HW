@@ -13,12 +13,13 @@ export default class PostgresUserRepository implements UserRepository{
     async save(user: User) {
         // funcion para guardar el User
         try {
-            const name = user.name;
-            const birthDate = user.birthDate;
-            const password = user.password;
-            const dpi = user.dpi.value;
-            const email = user.email.value;
-            const phoneNum = user.phoneNum.value;
+            const dataPrimitive = user.toPrimitives();
+            const name = dataPrimitive.name;
+            const birthDate = dataPrimitive.birthDate;
+            const password = dataPrimitive.password;
+            const dpi = dataPrimitive.dpi;
+            const email = dataPrimitive.email;
+            const phoneNum = dataPrimitive.phoneNumber;
             const valid_status = false;
 
             await this.sql`INSERT INTO public.user (name, birthDate, password, dpi, email, phone_number, valid_status) 
@@ -28,28 +29,14 @@ export default class PostgresUserRepository implements UserRepository{
         }
     }
 
-    async seeUsers(id: number): Promise<User | null> {
+    async seeUsers(id: number): Promise<boolean | null> {
         // funcion para ver usuario por id
         try {
             const result = await this.sql`
-                SELECT id, name, birthDate, password, dpi, email, phone_number, valid_status
-                FROM public.user
-                WHERE id = ${id}
-                LIMIT 1;
-            `;
+                SELECT  valid_status FROM public.user WHERE id = ${id} LIMIT 1;`;
+            console.log(result[0].valid_status)
+            return result[0].valid_status
 
-            if (result.length === 0) return null;
-
-            const r = result[0];
-            return User.create(
-                r.id,
-                r.name,
-                new Date(r.birthDate),
-                r.password,
-                r.dpi,
-                r.email,
-                r.phone_number
-            );
         } catch (error) {
             console.log("An error occurred while fetching user data: ", error);
             return null;
