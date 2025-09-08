@@ -1,26 +1,28 @@
 import { NextRequest, NextResponse } from "next/server";
 import PostgresUserRepository from "@/utils/postgres-users-repository";
-import UserSeeUsers from "@/utils/see-users";
+import userSearcher from "@/utils/user-searcher";
 import UserUpdate from "@/utils/user-update";
+import InMemoryBookRepository from "@/utils/in-memory-book-repository";
+import BookSearcher from "@/utils/book-searcher";
+
 
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } } ) {
     try {
+        // creacion del UserRepo y el userSearcher
         const id = await  Number(params.id);
-        console.log("id", id)
         const repository = new PostgresUserRepository();
-        const seeUser = new UserSeeUsers(repository);
-        const user = await seeUser.run(id);
-        console.log("usuario", user)
+        const seeUser = new userSearcher(repository);
 
+        // creacion de bookRepo y del bookSearcher
+        const bookRepository = new InMemoryBookRepository();
+        const bookSearcher = new BookSearcher(bookRepository, seeUser);
+        const books = await bookSearcher.run(id);
 
-        if (user === null) {
-            return NextResponse.json({ message: 'User not found' }, { status: 404 });
-        }
-
-        return NextResponse.json(user);
+        return NextResponse.json(books);
     } catch (error) {
-        return NextResponse.json({ message: 'Failed to fetch data' }, { status: 500 });
+        console.log(error)
+        return NextResponse.json({ message: 'No tiene acceso'}, { status: 500 });
     }
 }
 
