@@ -1,6 +1,7 @@
 import postgres, { Sql } from "postgres";
 import UserRepository from "./user-repository";
 import User from "./user";
+import UserDto from "./user-dto";
 
 export default class PostgresUserRepository implements UserRepository{
     private readonly sql: Sql;
@@ -43,16 +44,30 @@ export default class PostgresUserRepository implements UserRepository{
         }
     }
 
-    async update(id: number): Promise<void> {
+    async update(id: number): Promise<UserDto | null> {
     // funcion para actualizar valid_status = true
         try {
-        await this.sql`
-            UPDATE public.user
-            SET valid_status = TRUE
-            WHERE id = ${id};
-        `;
+            const [rows] = await this.sql`
+                UPDATE public.user
+                SET valid_status = TRUE
+                WHERE id = ${id} returning *;
+            `;
+
+            const user = User.create(
+                parseInt(rows.id), 
+                rows.name, 
+                rows.birthdate, 
+                rows.password, 
+                rows.dpi, 
+                rows.email, 
+                rows.phone_number)
+            
+            const userDto = user.toPrimitives()
+            return userDto
+
         } catch (error) {
-        console.log("An error occurred while updating user data: ", error);
+            console.log("An error occurred while updating user data: ", error);
+            return null;
         }
     }
 
