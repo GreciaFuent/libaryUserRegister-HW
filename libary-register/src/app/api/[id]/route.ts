@@ -4,6 +4,8 @@ import userSearcher from "@/utils/user-searcher";
 import UserUpdate from "@/utils/user-update";
 import InMemoryBookRepository from "@/utils/in-memory-book-repository";
 import BookSearcher from "@/utils/book-searcher";
+import EmailSender from "@/utils/emailSender";
+import WhatsAppSender from "@/utils/whatsAppSender";
 
 
 
@@ -30,7 +32,9 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
     try {
         const id = Number(params.id);
         const repository = new PostgresUserRepository();
-        const updater = new UserUpdate(repository);
+        //const sender = new EmailSender();
+        const sender = new WhatsAppSender();
+        const updater = new UserUpdate(repository, sender);
         await updater.run(id);
 
         return NextResponse.json({ message: `User with id=${id} updated successfully` });
