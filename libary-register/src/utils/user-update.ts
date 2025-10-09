@@ -1,5 +1,6 @@
 import NotificationSender from "./notificationSender";
 import User from "./user";
+import UserDto from "./user-dto";
 import UserUpdater from "./userUpdater";
 
 // este es el caso de uso
@@ -12,11 +13,13 @@ export default class UserUpdate {
         this.sender = sender
     }
 
-    public async run(user: User): Promise<void> {
+        public async run(id: number, valid_status?: boolean): Promise<UserDto> {
         // Encargado de actualizar valid_status = true
-        await this.repository.update(user);
-        console.log(this.sender.send(user));
+        const user = await this.repository.update(id, valid_status ?? true);
+        console.log(this.sender.send(!user));
+        return user;
     }
 }
+
 
 

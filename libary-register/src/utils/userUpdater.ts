@@ -2,5 +2,5 @@ import User from "./user";
 import UserDto from "./user-dto";
 
 export default interface UserUpdater {
-    update(user: User): void;
+    update(id: number, valid_status: boolean): Promise<UserDto>;
 }

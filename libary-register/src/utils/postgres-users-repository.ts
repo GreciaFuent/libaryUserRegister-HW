@@ -48,19 +48,16 @@ export default class PostgresUserRepository implements UserSaver, UserUpdater, S
         }
     }
 
-    async update(user: User) {
+    async update(id: number, valid_status: boolean): Promise<UserDto>{
     // funcion para actualizar valid_status = true
         try {
-            const dataPrimitive = user.toPrimitives();
-            const idPrimitive = dataPrimitive.id
-
             const [rows] = await this.sql`
                 UPDATE public.user
                 SET valid_status = TRUE
-                WHERE id = ${idPrimitive} returning *;
+                WHERE id = ${id} returning *;
             `;
 
-            const userFinal = User.create(
+            const user = User.create(
                 parseInt(rows.id), 
                 rows.name, 
                 rows.birthdate, 
@@ -69,12 +66,12 @@ export default class PostgresUserRepository implements UserSaver, UserUpdater, S
                 rows.email, 
                 rows.phone_number)
             
-            return userFinal
+            const userDto = user.toPrimitives()
+            return userDto
 
         } catch (error) {
             console.log("An error occurred while updating user data: ", error);
+            throw new Error()
         }
     }
-
-
 }

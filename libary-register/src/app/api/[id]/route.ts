@@ -30,24 +30,14 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     }
 }
 
-export async function PATCH(request: NextRequest,context: { params: Promise<{ id: string }> }) {
-  try {
-    const { id } = await context.params; // ← await obligatorio
-    const numericId = Number(id);
+export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
+    try {
+        const id = Number(params.id);
         const repository = new PostgresUserRepository();
         //const sender = new EmailSender();
         const sender = new WhatsAppSender();
         const updater = new UserUpdate(repository, sender);
-
-        // Fetch the user by id before updating
-        const userSearcherFinal = new userSearcher(repository);
-        const userResult = await userSearcherFinal.run(numericId);
-
-        if (typeof userResult !== "object" || userResult === null) {
-            return NextResponse.json({ message: 'User not found or invalid user data' }, { status: 404 });
-        }
-
-        await updater.run(userResult);
+        await updater.run(id);
 
         return NextResponse.json({ message: `User with id=${id} updated successfully` });
     } catch (error) {
