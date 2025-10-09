@@ -10,7 +10,7 @@ export default class userSearcher {
 
     public async run(id: number): Promise<boolean | null> {
         // Encargado de buscar un usuario por id
-        const user = await this.repository.seeUsers(id);
+        const user = await this.repository.seeUserId(id);
         return user;
     }
 }

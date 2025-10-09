@@ -1,12 +1,12 @@
+import { WhatsAppCredentials } from "./credentials";
 import NotificationSender from "./notificationSender";
-import UserDto from "./user-dto";
 
 export default class WhatsAppSender implements NotificationSender{
-    constructor (){
-    }
 
-    public send(user: UserDto): string{
-        return  "Enviando mensaje ddesde WhatsAppSender desde: " + user.phoneNumber
+    public send(credentials: object){
+        const {phoneNumber, text} = credentials as WhatsAppCredentials;
+
+        return(`Phone: ${phoneNumber}. Text: ${text}.`)
     }
 
 }

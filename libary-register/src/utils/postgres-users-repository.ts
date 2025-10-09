@@ -30,7 +30,7 @@ export default class PostgresUserRepository implements UserRepository{
         }
     }
 
-    async seeUsers(id: number): Promise<boolean | null> {
+    async seeUserId(id: number): Promise<boolean | null> {
         // funcion para ver usuario por id
         try {
             const result = await this.sql`
