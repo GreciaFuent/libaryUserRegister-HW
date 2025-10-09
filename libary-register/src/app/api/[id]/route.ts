@@ -11,15 +11,16 @@ import WhatsAppSender from "@/utils/whatsAppSender";
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } } ) {
     try {
-        // creacion del UserRepo y el userSearcher
-        const id = await  Number(params.id);
-        const repository = new PostgresUserRepository();
-        const seeUser = new userSearcher(repository);
 
-        // creacion de bookRepo y del bookSearcher
+        const id = Number(params.id);
+
+        const userRepository = new PostgresUserRepository();
+        const userSearcherFinal = new userSearcher(userRepository);
+        const verification = await userSearcherFinal.run(id);
+
         const bookRepository = new InMemoryBookRepository();
-        const bookSearcher = new BookSearcher(bookRepository, seeUser);
-        const books = await bookSearcher.run(id);
+        const bookSearcher = new BookSearcher(bookRepository);
+        const books = await bookSearcher.run(verification);
 
         return NextResponse.json(books);
     } catch (error) {
