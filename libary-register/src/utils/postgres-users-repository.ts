@@ -1,9 +1,11 @@
 import postgres, { Sql } from "postgres";
-import UserRepository from "./user-repository";
+import UserUpdater from "./userUpdater";
+import SeerUserId from "./seerUserId";
+import UserSaver from "./userSaver";
 import User from "./user";
 import UserDto from "./user-dto";
 
-export default class PostgresUserRepository implements UserRepository{
+export default class PostgresUserRepository implements UserUpdater, SeerUserId, UserSaver{
     private readonly sql: Sql;
 
     constructor () {

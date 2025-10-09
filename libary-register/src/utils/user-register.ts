@@ -1,14 +1,13 @@
 import User from "./user";
-import UserRepository from "./user-repository";
-
+import UserSaver from "./userSaver";
 
 
 // este es el caso de uso
 export default class UserRegister {
 
-    private readonly repository: UserRepository;
+    private readonly repository: UserSaver;
 
-    constructor(repository: UserRepository){
+    constructor(repository: UserSaver){
         this.repository = repository
     }
 
