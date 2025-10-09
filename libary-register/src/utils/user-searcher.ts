@@ -1,10 +1,10 @@
-import UserRepository from "./user-repository";
+import SeerUserId from "./seerUserId";
 
 // este es el caso de uso
 export default class userSearcher {
-    private readonly repository: UserRepository;
+    private readonly repository: SeerUserId;
 
-    constructor(repository: UserRepository) {
+    constructor(repository: SeerUserId) {
         this.repository = repository;
     }
 
