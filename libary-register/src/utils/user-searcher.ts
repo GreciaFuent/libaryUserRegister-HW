@@ -8,9 +8,13 @@ export default class userSearcher {
         this.repository = repository;
     }
 
-    public async run(id: number): Promise<boolean | null> {
-        // Encargado de buscar un usuario por id
+    public async run(id: number): Promise<boolean> {
         const user = await this.repository.seeUserId(id);
-        return user;
+
+        if (!user) {
+        return false;
+        }
+
+        return true;
     }
 }
