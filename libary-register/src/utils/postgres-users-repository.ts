@@ -4,14 +4,16 @@ import SeerUserId from "./seerUserId";
 import UserSaver from "./userSaver";
 import User from "./user";
 import UserDto from "./user-dto";
+import DBService from "./DBService";
 
-export default class PostgresUserRepository implements UserUpdater, SeerUserId, UserSaver{
+export default class PostgresUserRepository implements UserSaver, UserUpdater, SeerUserId {
     private readonly sql: Sql;
 
     constructor () {
     const connectionString = 'postgresql://postgres.gekrcatdblzdopluwqba:Diferencias.645@aws-1-us-east-1.pooler.supabase.com:6543/postgres'
     this.sql = postgres(connectionString)
     }
+
 
     async save(user: User) {
         // funcion para guardar el User
@@ -32,7 +34,7 @@ export default class PostgresUserRepository implements UserUpdater, SeerUserId, 
         }
     }
 
-    async seeUserId(id: number): Promise<boolean | null> {
+    async seeUserId(id: number): Promise<boolean>  {
         // funcion para ver usuario por id
         try {
             const result = await this.sql`
@@ -42,11 +44,11 @@ export default class PostgresUserRepository implements UserUpdater, SeerUserId, 
 
         } catch (error) {
             console.log("An error occurred while fetching user data: ", error);
-            return null;
+            return false;
         }
     }
 
-    async update(id: number): Promise<UserDto | null> {
+    async update(id: number, valid_status: boolean): Promise<UserDto>{
     // funcion para actualizar valid_status = true
         try {
             const [rows] = await this.sql`
@@ -69,9 +71,7 @@ export default class PostgresUserRepository implements UserUpdater, SeerUserId, 
 
         } catch (error) {
             console.log("An error occurred while updating user data: ", error);
-            return null;
+            throw new Error()
         }
     }
-
-
 }
