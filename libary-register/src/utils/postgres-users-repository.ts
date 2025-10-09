@@ -4,14 +4,16 @@ import SeerUserId from "./seerUserId";
 import UserSaver from "./userSaver";
 import User from "./user";
 import UserDto from "./user-dto";
+import DBService from "./DBService";
 
-export default class PostgresUserRepository implements UserUpdater, SeerUserId, UserSaver{
+export default class PostgresUserRepository implements UserSaver, UserUpdater, SeerUserId {
     private readonly sql: Sql;
 
     constructor () {
     const connectionString = 'postgresql://postgres.gekrcatdblzdopluwqba:Diferencias.645@aws-1-us-east-1.pooler.supabase.com:6543/postgres'
     this.sql = postgres(connectionString)
     }
+
 
     async save(user: User) {
         // funcion para guardar el User
@@ -32,7 +34,7 @@ export default class PostgresUserRepository implements UserUpdater, SeerUserId, 
         }
     }
 
-    async seeUserId(id: number): Promise<boolean | null> {
+    async seeUserId(id: number): Promise<boolean>  {
         // funcion para ver usuario por id
         try {
             const result = await this.sql`
@@ -42,20 +44,23 @@ export default class PostgresUserRepository implements UserUpdater, SeerUserId, 
 
         } catch (error) {
             console.log("An error occurred while fetching user data: ", error);
-            return null;
+            return false;
         }
     }
 
-    async update(id: number): Promise<UserDto | null> {
+    async update(user: User) {
     // funcion para actualizar valid_status = true
         try {
+            const dataPrimitive = user.toPrimitives();
+            const idPrimitive = dataPrimitive.id
+
             const [rows] = await this.sql`
                 UPDATE public.user
                 SET valid_status = TRUE
-                WHERE id = ${id} returning *;
+                WHERE id = ${idPrimitive} returning *;
             `;
 
-            const user = User.create(
+            const userFinal = User.create(
                 parseInt(rows.id), 
                 rows.name, 
                 rows.birthdate, 
@@ -64,12 +69,10 @@ export default class PostgresUserRepository implements UserUpdater, SeerUserId, 
                 rows.email, 
                 rows.phone_number)
             
-            const userDto = user.toPrimitives()
-            return userDto
+            return userFinal
 
         } catch (error) {
             console.log("An error occurred while updating user data: ", error);
-            return null;
         }
     }
 

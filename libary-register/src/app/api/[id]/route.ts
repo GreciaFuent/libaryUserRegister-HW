@@ -6,6 +6,7 @@ import InMemoryBookRepository from "@/utils/in-memory-book-repository";
 import BookSearcher from "@/utils/book-searcher";
 import EmailSender from "@/utils/emailSender";
 import WhatsAppSender from "@/utils/whatsAppSender";
+import User from "@/utils/user";
 
 
 
@@ -29,14 +30,24 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     }
 }
 
-export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
-    try {
-        const id = Number(params.id);
+export async function PATCH(request: NextRequest,context: { params: Promise<{ id: string }> }) {
+  try {
+    const { id } = await context.params; // ← await obligatorio
+    const numericId = Number(id);
         const repository = new PostgresUserRepository();
         //const sender = new EmailSender();
         const sender = new WhatsAppSender();
         const updater = new UserUpdate(repository, sender);
-        await updater.run(id);
+
+        // Fetch the user by id before updating
+        const userSearcherFinal = new userSearcher(repository);
+        const userResult = await userSearcherFinal.run(numericId);
+
+        if (typeof userResult !== "object" || userResult === null) {
+            return NextResponse.json({ message: 'User not found or invalid user data' }, { status: 404 });
+        }
+
+        await updater.run(userResult);
 
         return NextResponse.json({ message: `User with id=${id} updated successfully` });
     } catch (error) {
