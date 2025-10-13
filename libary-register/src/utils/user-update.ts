@@ -1,3 +1,4 @@
+import { use } from "react";
 import NotificationSender from "./notificationSender";
 import User from "./user";
 import UserDto from "./user-dto";
@@ -16,7 +17,9 @@ export default class UserUpdate {
         public async run(id: number, valid_status?: boolean): Promise<UserDto> {
         // Encargado de actualizar valid_status = true
         const user = await this.repository.update(id, valid_status ?? true);
-        console.log(this.sender.send(!user));
+
+        this.sender.send(user)
+        console.log(user);
         return user;
     }
 }
