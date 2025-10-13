@@ -1,6 +1,6 @@
 export interface EmailCredentials {
     email: string;
-    text: string;
+    name: string;
 }
 
 
