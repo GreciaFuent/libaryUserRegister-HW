@@ -6,7 +6,7 @@ export interface EmailCredentials {
 
 export interface WhatsAppCredentials {
     phoneNumber: string;
-    text: string;
+    name: string;
 
 }
 
