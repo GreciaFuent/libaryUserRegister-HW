@@ -13,11 +13,12 @@ import User from "@/utils/user";
 export async function GET(request: NextRequest, { params }: { params: { id: string } } ) {
     try {
 
-        const id = Number(params.id);
+        const { id } = await params;
+        const numId = Number(id);
 
         const userRepository = new PostgresUserRepository();
         const userSearcherFinal = new userSearcher(userRepository);
-        const verification = await userSearcherFinal.run(id);
+        const verification = await userSearcherFinal.run(numId);
 
         const bookRepository = new InMemoryBookRepository();
         const bookSearcher = new BookSearcher(bookRepository);
@@ -32,12 +33,13 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 
 export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
     try {
-        const id = Number(params.id);
+        const { id } = await params;
+        const numId = Number(id);
         const repository = new PostgresUserRepository();
         //const sender = new EmailSender();
         const sender = new WhatsAppSender();
         const updater = new UserUpdate(repository, sender);
-        await updater.run(id);
+        await updater.run(numId);
 
         return NextResponse.json({ message: `User with id=${id} updated successfully` });
     } catch (error) {
