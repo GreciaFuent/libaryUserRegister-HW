@@ -15,3 +15,63 @@
     flex-direction: column;
     align-items: center;
 }
+
+/* --- Sección de libros --- */
+
+.books-section {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: #f8f9fa;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+.books-section h4 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.books-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.book-card {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.book-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.book-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #415f81;
+  margin-bottom: 0.3rem;
+}
+
+.book-author {
+  font-size: 0.95rem;
+  color: #333;
+  margin-bottom: 0.1rem;
+}
+
+.book-date {
+  font-size: 0.85rem;
+  color: #777;
+}

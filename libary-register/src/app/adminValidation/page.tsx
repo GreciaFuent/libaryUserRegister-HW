@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import SolicitudCard from "@/components/infoUser";
+import InMemoryBookRepository from "@/utils/in-memory-book-repository"; 
 import "./adminPage.css";
 
 type User = {
@@ -9,10 +10,17 @@ type User = {
   valid_status: boolean;
 };
 
+type Book = {
+  name: string;
+  datePublish: string;
+  author: string;
+};
+
 export default function ValidationPage() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [books, setBooks] = useState<Book[]>([]); // ✅ nuevo estado
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -29,10 +37,16 @@ export default function ValidationPage() {
         const res = await fetch(`/api/${id}`);
         const data = await res.json();
 
+        // Si no tiene acceso
         if (!res.ok && data?.message === "No tiene acceso") {
-          setUser({ id: Number(id), valid_status: false });
+          setUser({ id: Number(id.split("?")[0]), valid_status: false });
         } else {
-          setUser({ id: Number(id), valid_status: true });
+          // Si tiene acceso
+          setUser({ id: Number(id.split("?")[0]), valid_status: true });
+
+          const repo = new InMemoryBookRepository();
+          const bookList = await repo.find();
+          setBooks(bookList as unknown as Book[]);
         }
       } catch (error) {
         console.error("Error al cargar usuario:", error);
@@ -62,6 +76,12 @@ export default function ValidationPage() {
 
       if (res.ok) {
         setUser((prev) => prev && { ...prev, valid_status: true });
+
+      
+        const repo = new InMemoryBookRepository();
+        const bookList = await repo.find();
+        setBooks(bookList as unknown as Book[]);
+
         alert(
           tipo === "email"
             ? `Acceso concedido y correo enviado correctamente`
@@ -70,11 +90,10 @@ export default function ValidationPage() {
             : `Acceso concedido sin notificación`
         );
       } else {
-        console.log("siempre tira esto ")
+        alert("❌ No se pudo dar acceso al usuario");
       }
     } catch (error) {
       console.error("Error al actualizar estado:", error);
-      alert("Error de conexión con el servidor");
     }
   };
 
@@ -99,6 +118,23 @@ export default function ValidationPage() {
           onDarAcceso={handleDarAcceso}
         />
       </div>
+
+      {user.valid_status && books.length > 0 && (
+        <div className="books-section">
+          <h4>📚 Libros disponibles</h4>
+          <ul className="books-list">
+            {books.map((book, index) => (
+              <li key={index} className="book-card">
+                <div className="book-title">{book.name}</div>
+                <div className="book-author">Autor: {book.author}</div>
+                <div className="book-date">
+                  Publicado en {new Date(book.datePublish).getFullYear()}
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }
