@@ -1,11 +1,11 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "../styles/infoUserCard.css";
 
 type UserCardProps = {
   idUser: number;
   defaultApproved?: boolean;
-  onDarAcceso?: () => void;
+  onDarAcceso?: (tipo?: "whatsapp" | "email") => void;
 };
 
 export default function SolicitudCard({
@@ -14,13 +14,23 @@ export default function SolicitudCard({
   onDarAcceso,
 }: UserCardProps) {
   const [approved, setApproved] = useState(defaultApproved);
+  const [tipoEnvio, setTipoEnvio] = useState<"whatsapp" | "email" | null>(null);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const tipo = params.get("tipo");
+    if (tipo === "whatsapp" || tipo === "email") {
+      setTipoEnvio(tipo);
+    }
+  }, []);
 
   const handleApprove = async () => {
     if (!approved) {
-      await onDarAcceso?.();
+      await onDarAcceso?.(tipoEnvio || undefined);
       setApproved(true);
     }
   };
+
 
   const handleSendWhatsApp = () => {
     alert(`📲 Se envió confirmación por WhatsApp al usuario con ID ${idUser}`);
@@ -37,38 +47,47 @@ export default function SolicitudCard({
       </div>
 
       <div className="user-card-middle">
-        <div className={`user-card-status ${approved ? "approved" : "pending"}`}>
+        <div
+          className={`user-card-status ${approved ? "approved" : "pending"}`}
+        >
           {approved ? "Usuario con acceso" : "Usuario sin acceso"}
         </div>
       </div>
 
       <div className="user-card-right">
         {!approved && (
-          <button
-            type="button"
-            className="user-card-button to-approve"
-            onClick={handleApprove}
-          >
-            Dar acceso
-          </button>
+          <>
+            {tipoEnvio === "whatsapp" ? (
+              <button
+                type="button"
+                className="user-card-button whatsapp"
+                onClick={handleApprove}
+              >
+                Dar acceso y enviar WhatsApp
+              </button>
+            ) : tipoEnvio === "email" ? (
+              <button
+                type="button"
+                className="user-card-button email"
+                onClick={handleApprove}
+              >
+                Dar acceso y enviar Correo
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="user-card-button to-approve"
+                onClick={handleApprove}
+              >
+                Dar acceso
+              </button>
+            )}
+          </>
         )}
 
         {approved && (
           <>
-            <button
-              type="button"
-              className="user-card-button whatsapp"
-              onClick={handleSendWhatsApp}
-            >
-              Enviar WhatsApp
-            </button>
-            <button
-              type="button"
-              className="user-card-button email"
-              onClick={handleSendEmail}
-            >
-              Enviar Correo
-            </button>
+           <h4>Ya fue notificado el usuario</h4>
           </>
         )}
       </div>

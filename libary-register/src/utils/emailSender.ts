@@ -11,7 +11,7 @@ export default class EmailSender implements NotificationSender{
         const {email, name} = credentials as EmailCredentials;
         try {
             await sendgrid.send({
-                to: "costalesdelau@gmail.com",
+                to: email,
                 from: "mayda.matul@gmail.com",
                 subject: 'Confirmación de Usuario',
                 html: `<h1>HCM-Library</h1>

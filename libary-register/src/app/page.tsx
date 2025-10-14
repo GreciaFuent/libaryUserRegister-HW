@@ -27,7 +27,7 @@ export default function Home() {
       birthDate: formData.get("birth"),
       email: formData.get("email"),
       password: formData.get("password"),
-      phoneNum: formData.get("phone_number"),
+      phoneNum: formData.get("phone"),
     };
 
     try {
@@ -81,6 +81,11 @@ export default function Home() {
             <div className="form-group">
               <label htmlFor="dpi">DPI:</label>
               <input type="text" id="dpi" name="dpi" required />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="dpi">Telefono:</label>
+              <input type="text" id="phone" name="phone" required />
             </div>
 
             <div className="form-group">

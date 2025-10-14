@@ -45,21 +45,36 @@ export default function ValidationPage() {
     fetchUser();
   }, []);
 
-  const handleDarAcceso = async (id: number) => {
+  const handleDarAcceso = async (tipo?: "whatsapp" | "email") => {
+    if (!user) return;
     try {
-      const res = await fetch(`/api/${id}`, {
+      const url = tipo
+        ? `/api/${user.id}?tipo=${tipo}`
+        : `/api/${user.id}`;
+
+      const res = await fetch(url, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ valid_status: true }),
       });
 
+      const data = await res.json();
+
       if (res.ok) {
         setUser((prev) => prev && { ...prev, valid_status: true });
+        alert(
+          tipo === "email"
+            ? `Acceso concedido y correo enviado correctamente`
+            : tipo === "whatsapp"
+            ? `Acceso concedido y WhatsApp enviado correctamente`
+            : `Acceso concedido sin notificación`
+        );
       } else {
-        alert("No se pudo dar acceso al usuario");
+        console.log("siempre tira esto ")
       }
     } catch (error) {
       console.error("Error al actualizar estado:", error);
+      alert("Error de conexión con el servidor");
     }
   };
 
@@ -81,7 +96,7 @@ export default function ValidationPage() {
         <SolicitudCard
           idUser={user.id}
           defaultApproved={user.valid_status}
-          onDarAcceso={() => handleDarAcceso(user.id)}
+          onDarAcceso={handleDarAcceso}
         />
       </div>
     </div>

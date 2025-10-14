@@ -9,7 +9,6 @@ import WhatsAppSender from "@/utils/whatsAppSender";
 import User from "@/utils/user";
 
 
-
 export async function GET(request: NextRequest, { params }: { params: { id: string } } ) {
     try {
 
@@ -32,18 +31,23 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 }
 
 export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
-    try {
-        const { id } = await params;
-        const numId = Number(id);
-        const repository = new PostgresUserRepository();
-        //const sender = new EmailSender();
-        const sender = new WhatsAppSender();
-        const updater = new UserUpdate(repository, sender);
-        await updater.run(numId);
+  try {
+    const { id } = await params;
+    const numId = Number(id);
+    const tipo = request.nextUrl.searchParams.get("tipo");
 
-        return NextResponse.json({ message: `User with id=${id} updated successfully` });
-    } catch (error) {
-        return NextResponse.json({ message: 'Failed to update data' }, { status: 500 });
-    }
+    const repository = new PostgresUserRepository();
+    const sender = tipo === "email" ? new EmailSender() : new WhatsAppSender();
+    const updater = new UserUpdate(repository, sender);
+
+    await updater.run(numId);
+
+    return NextResponse.json({
+      message: `User ${id} updated successfully via ${tipo || "whatsapp"}`,
+    });
+  } catch (error) {
+    console.error("Error en PATCH:", error);
+    return NextResponse.json({ message: "Failed to update data" }, { status: 500 });
+  }
 }
 
